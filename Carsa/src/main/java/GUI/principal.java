@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  *
@@ -41,6 +42,8 @@ public class principal extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,6 +73,18 @@ public class principal extends javax.swing.JFrame {
         jMenu2.setText("Edit");
         jMenuBar1.add(jMenu2);
 
+        jMenu3.setText("Base D");
+
+        jMenuItem2.setText("Crear base");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -91,6 +106,12 @@ public class principal extends javax.swing.JFrame {
         carga_excel();
         
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        
+        
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -132,8 +153,10 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     // End of variables declaration//GEN-END:variables
 
     private void carga_excel() {
@@ -155,33 +178,32 @@ public class principal extends javax.swing.JFrame {
                     return;
                 }
 
-                // Leer el archivo Excel
-                FileInputStream file = new FileInputStream(archivoExcel);
-                Workbook workbook = new XSSFWorkbook(file);
-                Sheet hoja = workbook.getSheetAt(0);
-
-                // Mostrar contenido por consola
-                for (Row fila : hoja) {
-                    for (Cell celda : fila) {
-                        switch (celda.getCellType()) {
-                            case STRING:
-                                System.out.print(celda.getStringCellValue() + "\t");
-                                break;
-                            case NUMERIC:
-                                System.out.print(celda.getNumericCellValue() + "\t");
-                                break;
-                            case BOOLEAN:
-                                System.out.print(celda.getBooleanCellValue() + "\t");
-                                break;
-                            default:
-                                System.out.print("?\t");
+                try ( // Leer el archivo Excel
+                        FileInputStream file = new FileInputStream(archivoExcel); 
+                        XSSFWorkbook wb = new XSSFWorkbook(file)) {
+                        XSSFSheet hoja = wb.getSheetAt(0);
+                    
+                    // Mostrar contenido por consola
+                    for (Row fila : hoja) {
+                        for (Cell celda : fila) {
+                            switch (celda.getCellType()) {
+                                case STRING:
+                                    System.out.print(celda.getStringCellValue() + "\t");
+                                    break;
+                                case NUMERIC:
+                                    System.out.print(celda.getNumericCellValue() + "\t");
+                                    break;
+                                case BOOLEAN:
+                                    System.out.print(celda.getBooleanCellValue() + "\t");
+                                    break;
+                                default:
+                                    System.out.print("?\t");
+                            }
                         }
+                        System.out.println();
                     }
-                    System.out.println();
-                }
 
-                workbook.close();
-                file.close();
+                }
 
             } else {
                 System.out.println("Selección cancelada.");
